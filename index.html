@@ -192,11 +192,11 @@
         <option value="Arroz">Arroz</option>
       </select>
 
-      <label>Pupusas ($0.75 c/u)</label>
+      <label>Pupusas</label>
       <div class="item-pupusa">
         <div>
           <strong>Revueltas</strong>
-          <div class="precio-unit">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-1">$0.75</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="revueltas" data-delta="-1">-</button>
@@ -208,7 +208,7 @@
       <div class="item-pupusa">
         <div>
           <strong>Frijol con queso</strong>
-          <div class="precio-unit">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-2">$0.75</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="frijol_queso" data-delta="-1">-</button>
@@ -220,7 +220,7 @@
       <div class="item-pupusa">
         <div>
           <strong>Queso</strong>
-          <div class="precio-unit">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-3">$0.75</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="queso" data-delta="-1">-</button>
@@ -231,11 +231,13 @@
 
       <label for="bebida">Bebida</label>
       <select id="bebida">
-        <option value="Ninguna" data-precio="0">Ninguna ($0.00)</option>
-        <option value="Soda" data-precio="0.75">Soda ($0.75)</option>
+        <option value="Ninguna" data-precio="0.00">Ninguna ($0.00)</option>
+        <option value="Soda en lata" data-precio="1.00">Soda en lata ($1.00)</option>
+        <option value="Café" data-precio="0.35">Café ($0.35)</option>
+        <option value="Botella con agua" data-precio="0.65">Botella con agua ($0.65)</option>
         <option value="Gatorade" data-precio="1.25">Gatorade ($1.25)</option>
-        <option value="Agua" data-precio="0.50">Agua ($0.50)</option>
-        <option value="Horchata / Fresco" data-precio="0.75">Horchata / Fresco ($0.75)</option>
+        <option value="Té frío" data-precio="1.00">Té frío ($1.00)</option>
+        <option value="Cascada 355 ml" data-precio="0.40">Cascada 355 ml ($0.40)</option>
       </select>
 
       <label for="notas">Notas (opcional)</label>
@@ -271,6 +273,10 @@
     const avisoEdicion = document.getElementById('avisoEdicion');
     const btnBuscar = document.getElementById('btnBuscar');
     const btnGuardar = document.getElementById('btnGuardar');
+
+    ['lbl-precio-1', 'lbl-precio-2', 'lbl-precio-3'].forEach((id) => {
+      document.getElementById(id).textContent = `$${PRECIO_PUPUSA.toFixed(2)}`;
+    });
 
     function actualizarVista() {
       document.getElementById('val-revueltas').textContent = cantidades.revueltas;
@@ -339,7 +345,7 @@
       document.getElementById('masa').value = p.masa || 'Maíz';
       document.getElementById('notas').value = p.notas || '';
 
-      const existeBebida = Array.from(bebidaSelect.options).some(opt => opt.value === p.bebida);
+      const existeBebida = Array.from(bebidaSelect.options).some((opt) => opt.value === p.bebida);
       bebidaSelect.value = existeBebida ? p.bebida : 'Ninguna';
 
       actualizarVista();

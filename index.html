@@ -178,7 +178,7 @@
     <form id="formPedido">
       <label for="nombre">Tu Nombre *</label>
       <div class="fila-nombre">
-        <input type="text" id="nombre" placeholder="Ej. Emerson" required />
+        <input type="text" id="nombre" placeholder="Ej. Juan" required />
         <button type="button" class="btn-buscar" id="btnBuscar">Editar mi pedido</button>
       </div>
 
@@ -196,7 +196,7 @@
       <div class="item-pupusa">
         <div>
           <strong>Revueltas</strong>
-          <div class="precio-unit" id="lbl-precio-1">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-1">$1.00</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="revueltas" data-delta="-1">-</button>
@@ -208,7 +208,7 @@
       <div class="item-pupusa">
         <div>
           <strong>Frijol con queso</strong>
-          <div class="precio-unit" id="lbl-precio-2">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-2">$1.00</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="frijol_queso" data-delta="-1">-</button>
@@ -220,7 +220,7 @@
       <div class="item-pupusa">
         <div>
           <strong>Queso</strong>
-          <div class="precio-unit" id="lbl-precio-3">$0.75</div>
+          <div class="precio-unit" id="lbl-precio-3">$1.00</div>
         </div>
         <div class="contador">
           <button type="button" data-tipo="queso" data-delta="-1">-</button>
@@ -260,7 +260,7 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_43lJm-CFa47uRiPB_OXmpw_CEsU9wzR';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const PRECIO_PUPUSA = 0.75;
+    const PRECIO_PUPUSA = 1.00;
     const cantidades = {
       revueltas: 0,
       frijol_queso: 0,

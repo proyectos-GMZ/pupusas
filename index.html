@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pupusas La UCAD</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f5f7;
+      color: #1f2937;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+    }
+    .sub {
+      color: #4b5563;
+      font-size: 0.92rem;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .fila-pupusa {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .controles {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .controles button {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #f9fafb;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .controles span {
+      min-width: 22px;
+      text-align: center;
+      font-weight: 700;
+    }
+    .total-box {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #eef2ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    button[type="submit"] {
+      width: 100%;
+      margin-top: 18px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #1d4ed8;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .mensaje {
+      margin-top: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Pupusas La UCAD</h1>
+    <p class="sub">Cada pupusa cuesta $1.00. El precio de la bebida se suma automáticamente al total.</p>
+
+    <form id="pedidoForm">
+      <label for="nombre">Tu nombre completo *</label>
+      <input type="text" id="nombre" required placeholder="Ej. Carlos Rivas" />
+
+      <label>Cantidad por especialidad ($1.00 c/u)</label>
+      <div class="fila-pupusa">
+        <span>Revueltas</span>
+        <div class="controles">
+          <button type="button" data-campo="revueltas" data-delta="-1">-</button>
+          <span id="revueltasVal">0</span>
+          <button type="button" data-campo="revueltas" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <div class="fila-pupusa">
+        <span>Frijol con queso</span>
+        <div class="controles">
+          <button type="button" data-campo="frijol_queso" data-delta="-1">-</button>
+          <span id="frijol_quesoVal">0</span>
+          <button type="button" data-campo="frijol_queso" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <div class="fila-pupusa">
+        <span>Queso</span>
+        <div class="controles">
+          <button type="button" data-campo="queso" data-delta="-1">-</button>
+          <span id="quesoVal">0</span>
+          <button type="button" data-campo="queso" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <label for="masa">¿De qué masa las prefieres? *</label>
+      <select id="masa" required>
+        <option value="Maíz">Maíz</option>
+        <option value="Arroz">Arroz</option>
+      </select>
+
+      <label for="bebida">¿Qué bebida deseas? *</label>
+      <select id="bebida" required>
+        <option value="Ninguna" data-precio="0.00">Ninguna - $0.00</option>
+        <option value="Café" data-precio="0.35">Café - $0.35</option>
+        <option value="Cascada 355 ml" data-precio="0.40">Cascada 355 ml - $0.40</option>
+        <option value="Botella con agua" data-precio="0.65">Botella con agua - $0.65</option>
+        <option value="Soda en lata" data-precio="1.00">Soda en lata - $1.00</option>
+        <option value="Té frío" data-precio="1.00">Té frío - $1.00</option>
+        <option value="Gatorade" data-precio="1.25">Gatorade - $1.25</option>
+      </select>
+
+      <label for="notas">Notas adicionales (Opcional)</label>
+      <textarea id="notas" rows="2" placeholder="Ej. Salsa aparte, bastante curtido, sabor de soda..."></textarea>
+
+      <div class="total-box">
+        <span>Total a pagar:</span>
+        <span id="totalTexto">$0.00</span>
+      </div>
+
+      <button type="submit" id="btnEnviar">Enviar pedido</button>
+      <div class="mensaje" id="mensaje"></div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://sojecxchvkyqekfujwjy.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_43lJm-CFa47uRiPB_OXmpw_CEsU9wzR';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const PRECIO_PUPUSA = 1.0;
+    const cantidades = {
+      revueltas: 0,
+      frijol_queso: 0,
+      queso: 0
+    };
+
+    const bebidaSelect = document.getElementById('bebida');
+    const totalTexto = document.getElementById('totalTexto');
+    const mensaje = document.getElementById('mensaje');
+    const form = document.getElementById('pedidoForm');
+    const btnEnviar = document.getElementById('btnEnviar');
+
+    function obtenerPrecioBebida() {
+      const opcion = bebidaSelect.options[bebidaSelect.selectedIndex];
+      return Number(opcion.dataset.precio || 0);
+    }
+
+    function calcularTotal() {
+      const totalPupusas =
+        (cantidades.revueltas + cantidades.frijol_queso + cantidades.queso) * PRECIO_PUPUSA;
+      return Number((totalPupusas + obtenerPrecioBebida()).toFixed(2));
+    }
+
+    function actualizarPantalla() {
+      document.getElementById('revueltasVal').textContent = cantidades.revueltas;
+      document.getElementById('frijol_quesoVal').textContent = cantidades.frijol_queso;
+      document.getElementById('quesoVal').textContent = cantidades.queso;
+      totalTexto.textContent = `$${calcularTotal().toFixed(2)}`;
+    }
+
+    document.querySelectorAll('.controles button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const campo = btn.dataset.campo;
+        const delta = Number(btn.dataset.delta);
+        cantidades[campo] = Math.max(0, cantidades[campo] + delta);
+        actualizarPantalla();
+      });
+    });
+
+    bebidaSelect.addEventListener('change', actualizarPantalla);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      mensaje.textContent = '';
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const masa = document.getElementById('masa').value;
+      const bebida = bebidaSelect.value;
+      const precioBebida = obtenerPrecioBebida();
+      const total = calcularTotal();
+      const notas = document.getElementById('notas').value.trim() || null;
+
+      const sumaPupusas = cantidades.revueltas + cantidades.frijol_queso + cantidades.queso;
+      if (sumaPupusas === 0 && precioBebida === 0) {
+        mensaje.style.color = '#b91c1c';
+        mensaje.textContent = 'Selecciona al menos una pupusa o una bebida.';
+        return;
+      }
+
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      const { error } = await supabase
+        .from('pedidos_pupusas')
+        .insert([
+          {
+            nombre,
+            masa,
+            revueltas: cantidades.revueltas,
+            frijol_queso: cantidades.frijol_queso,
+            queso: cantidades.queso,
+            bebida,
+            precio_bebida: precioBebida,
+            total,
+            notas
+          }
+        ]);
+
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar pedido';
+
+      if (error) {
+        mensaje.style.color = '#b91c1c';
+        mensaje.textContent = 'No se pudo guardar el pedido: ' + error.message;
+        return;
+      }
+
+      mensaje.style.color = '#15803d';
+      mensaje.textContent = `¡Pedido guardado! Total a pagar: $${total.toFixed(2)}.`;
+      form.reset();
+      cantidades.revueltas = 0;
+      cantidades.frijol_queso = 0;
+      cantidades.queso = 0;
+      actualizarPantalla();
+    });
+
+    actualizarPantalla();
+  </script>
+</body>
+</html>

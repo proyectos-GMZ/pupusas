@@ -3,172 +3,251 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pupusas La UCAD</title>
+  <title>Pedido de Pupusas</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: #f4f5f7;
+      background: #f3f4f6;
       color: #1f2937;
       margin: 0;
       padding: 20px;
     }
-    .card {
-      max-width: 520px;
+    .contenedor {
+      max-width: 480px;
       margin: 0 auto;
       background: #ffffff;
-      border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
     h1 {
       margin: 0 0 6px;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
+      text-align: center;
     }
-    .sub {
-      color: #4b5563;
+    .subtitulo {
+      text-align: center;
+      color: #6b7280;
       font-size: 0.92rem;
       margin-bottom: 20px;
     }
     label {
       display: block;
       font-weight: 600;
-      margin-top: 14px;
       margin-bottom: 6px;
+      font-size: 0.95rem;
     }
     input[type="text"],
     select,
     textarea {
       width: 100%;
-      box-sizing: border-box;
       padding: 10px 12px;
       border: 1px solid #d1d5db;
       border-radius: 8px;
       font-size: 1rem;
+      margin-bottom: 14px;
+      font-family: inherit;
     }
-    .fila-pupusa {
+    .fila-nombre {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .fila-nombre input {
+      margin-bottom: 0;
+      flex: 1;
+    }
+    .btn-buscar {
+      width: auto;
+      white-space: nowrap;
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .btn-buscar:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .aviso-edicion {
+      display: none;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+    }
+    .item-pupusa {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
       border-bottom: 1px solid #e5e7eb;
     }
-    .controles {
+    .item-pupusa:last-of-type {
+      border-bottom: none;
+      margin-bottom: 14px;
+    }
+    .precio-unit {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    .contador {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .controles button {
+    .contador button {
       width: 34px;
       height: 34px;
-      border: 1px solid #d1d5db;
       border-radius: 8px;
+      border: 1px solid #d1d5db;
       background: #f9fafb;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 700;
       cursor: pointer;
     }
-    .controles span {
+    .contador span {
       min-width: 22px;
       text-align: center;
       font-weight: 700;
+      font-size: 1.05rem;
     }
     .total-box {
-      margin-top: 20px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
       padding: 14px;
       border-radius: 10px;
-      background: #eef2ff;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
+      color: #166534;
+      margin-bottom: 16px;
     }
-    button[type="submit"] {
+    .btn-guardar {
       width: 100%;
-      margin-top: 18px;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #1d4ed8;
+      padding: 13px;
+      background: #16a34a;
       color: #ffffff;
-      font-size: 1rem;
-      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
       cursor: pointer;
     }
-    button[type="submit"]:disabled {
+    .btn-guardar:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
     .mensaje {
       margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
       font-weight: 600;
+      display: none;
+    }
+    .mensaje.ok {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+    .mensaje.err {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Pupusas La UCAD</h1>
-    <p class="sub">Cada pupusa cuesta $1.00. El precio de la bebida se suma automáticamente al total.</p>
+  <div class="contenedor">
+    <h1>Pedido de Pupusas</h1>
+    <p class="subtitulo">Escribe tu nombre. Si ya pediste, toca "Editar mi pedido".</p>
 
-    <form id="pedidoForm">
-      <label for="nombre">Tu nombre completo *</label>
-      <input type="text" id="nombre" required placeholder="Ej. Carlos Rivas" />
-
-      <label>Cantidad por especialidad ($1.00 c/u)</label>
-      <div class="fila-pupusa">
-        <span>Revueltas</span>
-        <div class="controles">
-          <button type="button" data-campo="revueltas" data-delta="-1">-</button>
-          <span id="revueltasVal">0</span>
-          <button type="button" data-campo="revueltas" data-delta="1">+</button>
-        </div>
+    <form id="formPedido">
+      <label for="nombre">Tu Nombre *</label>
+      <div class="fila-nombre">
+        <input type="text" id="nombre" placeholder="Ej. Emerson" required />
+        <button type="button" class="btn-buscar" id="btnBuscar">Editar mi pedido</button>
       </div>
 
-      <div class="fila-pupusa">
-        <span>Frijol con queso</span>
-        <div class="controles">
-          <button type="button" data-campo="frijol_queso" data-delta="-1">-</button>
-          <span id="frijol_quesoVal">0</span>
-          <button type="button" data-campo="frijol_queso" data-delta="1">+</button>
-        </div>
+      <div class="aviso-edicion" id="avisoEdicion">
+        Pedido encontrado. Modifica lo que quieras y presiona <strong>Guardar pedido</strong>.
       </div>
 
-      <div class="fila-pupusa">
-        <span>Queso</span>
-        <div class="controles">
-          <button type="button" data-campo="queso" data-delta="-1">-</button>
-          <span id="quesoVal">0</span>
-          <button type="button" data-campo="queso" data-delta="1">+</button>
-        </div>
-      </div>
-
-      <label for="masa">¿De qué masa las prefieres? *</label>
-      <select id="masa" required>
+      <label for="masa">Tipo de masa</label>
+      <select id="masa">
         <option value="Maíz">Maíz</option>
         <option value="Arroz">Arroz</option>
       </select>
 
-      <label for="bebida">¿Qué bebida deseas? *</label>
-      <select id="bebida" required>
-        <option value="Ninguna" data-precio="0.00">Ninguna - $0.00</option>
-        <option value="Café" data-precio="0.35">Café - $0.35</option>
-        <option value="Cascada 355 ml" data-precio="0.40">Cascada 355 ml - $0.40</option>
-        <option value="Botella con agua" data-precio="0.65">Botella con agua - $0.65</option>
-        <option value="Soda en lata" data-precio="1.00">Soda en lata - $1.00</option>
-        <option value="Té frío" data-precio="1.00">Té frío - $1.00</option>
-        <option value="Gatorade" data-precio="1.25">Gatorade - $1.25</option>
+      <label>Pupusas ($0.75 c/u)</label>
+      <div class="item-pupusa">
+        <div>
+          <strong>Revueltas</strong>
+          <div class="precio-unit">$0.75</div>
+        </div>
+        <div class="contador">
+          <button type="button" data-tipo="revueltas" data-delta="-1">-</button>
+          <span id="val-revueltas">0</span>
+          <button type="button" data-tipo="revueltas" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <div class="item-pupusa">
+        <div>
+          <strong>Frijol con queso</strong>
+          <div class="precio-unit">$0.75</div>
+        </div>
+        <div class="contador">
+          <button type="button" data-tipo="frijol_queso" data-delta="-1">-</button>
+          <span id="val-frijol_queso">0</span>
+          <button type="button" data-tipo="frijol_queso" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <div class="item-pupusa">
+        <div>
+          <strong>Queso</strong>
+          <div class="precio-unit">$0.75</div>
+        </div>
+        <div class="contador">
+          <button type="button" data-tipo="queso" data-delta="-1">-</button>
+          <span id="val-queso">0</span>
+          <button type="button" data-tipo="queso" data-delta="1">+</button>
+        </div>
+      </div>
+
+      <label for="bebida">Bebida</label>
+      <select id="bebida">
+        <option value="Ninguna" data-precio="0">Ninguna ($0.00)</option>
+        <option value="Soda" data-precio="0.75">Soda ($0.75)</option>
+        <option value="Gatorade" data-precio="1.25">Gatorade ($1.25)</option>
+        <option value="Agua" data-precio="0.50">Agua ($0.50)</option>
+        <option value="Horchata / Fresco" data-precio="0.75">Horchata / Fresco ($0.75)</option>
       </select>
 
-      <label for="notas">Notas adicionales (Opcional)</label>
-      <textarea id="notas" rows="2" placeholder="Ej. Salsa aparte, bastante curtido, sabor de soda..."></textarea>
+      <label for="notas">Notas (opcional)</label>
+      <textarea id="notas" rows="2" placeholder="Ej. Salsa y curtido aparte, bien doradas..."></textarea>
 
       <div class="total-box">
         <span>Total a pagar:</span>
         <span id="totalTexto">$0.00</span>
       </div>
 
-      <button type="submit" id="btnEnviar">Enviar pedido</button>
-      <div class="mensaje" id="mensaje"></div>
+      <button type="submit" class="btn-guardar" id="btnGuardar">Guardar pedido</button>
+      <div class="mensaje" id="mensajeBox"></div>
     </form>
   </div>
 
@@ -179,7 +258,7 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_43lJm-CFa47uRiPB_OXmpw_CEsU9wzR';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const PRECIO_PUPUSA = 1.0;
+    const PRECIO_PUPUSA = 0.75;
     const cantidades = {
       revueltas: 0,
       frijol_queso: 0,
@@ -188,95 +267,131 @@
 
     const bebidaSelect = document.getElementById('bebida');
     const totalTexto = document.getElementById('totalTexto');
-    const mensaje = document.getElementById('mensaje');
-    const form = document.getElementById('pedidoForm');
-    const btnEnviar = document.getElementById('btnEnviar');
+    const mensajeBox = document.getElementById('mensajeBox');
+    const avisoEdicion = document.getElementById('avisoEdicion');
+    const btnBuscar = document.getElementById('btnBuscar');
+    const btnGuardar = document.getElementById('btnGuardar');
 
-    function obtenerPrecioBebida() {
-      const opcion = bebidaSelect.options[bebidaSelect.selectedIndex];
-      return Number(opcion.dataset.precio || 0);
+    function actualizarVista() {
+      document.getElementById('val-revueltas').textContent = cantidades.revueltas;
+      document.getElementById('val-frijol_queso').textContent = cantidades.frijol_queso;
+      document.getElementById('val-queso').textContent = cantidades.queso;
+
+      const totalPupusas = cantidades.revueltas + cantidades.frijol_queso + cantidades.queso;
+      const precioBebida = parseFloat(bebidaSelect.selectedOptions[0].dataset.precio || '0');
+      const total = (totalPupusas * PRECIO_PUPUSA) + precioBebida;
+
+      totalTexto.textContent = `$${total.toFixed(2)}`;
+      return total;
     }
 
-    function calcularTotal() {
-      const totalPupusas =
-        (cantidades.revueltas + cantidades.frijol_queso + cantidades.queso) * PRECIO_PUPUSA;
-      return Number((totalPupusas + obtenerPrecioBebida()).toFixed(2));
-    }
-
-    function actualizarPantalla() {
-      document.getElementById('revueltasVal').textContent = cantidades.revueltas;
-      document.getElementById('frijol_quesoVal').textContent = cantidades.frijol_queso;
-      document.getElementById('quesoVal').textContent = cantidades.queso;
-      totalTexto.textContent = `$${calcularTotal().toFixed(2)}`;
-    }
-
-    document.querySelectorAll('.controles button').forEach((btn) => {
+    document.querySelectorAll('.contador button').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const campo = btn.dataset.campo;
-        const delta = Number(btn.dataset.delta);
-        cantidades[campo] = Math.max(0, cantidades[campo] + delta);
-        actualizarPantalla();
+        const tipo = btn.dataset.tipo;
+        const delta = parseInt(btn.dataset.delta, 10);
+        cantidades[tipo] = Math.max(0, cantidades[tipo] + delta);
+        actualizarVista();
       });
     });
 
-    bebidaSelect.addEventListener('change', actualizarPantalla);
+    bebidaSelect.addEventListener('change', actualizarVista);
 
-    form.addEventListener('submit', async (e) => {
+    function mostrarMensaje(texto, tipo) {
+      mensajeBox.textContent = texto;
+      mensajeBox.className = `mensaje ${tipo}`;
+    }
+
+    btnBuscar.addEventListener('click', async () => {
+      const nombreVal = document.getElementById('nombre').value.trim();
+      mensajeBox.className = 'mensaje';
+
+      if (!nombreVal) {
+        mostrarMensaje('Escribe tu nombre primero para buscar tu pedido.', 'err');
+        return;
+      }
+
+      btnBuscar.disabled = true;
+      btnBuscar.textContent = 'Buscando...';
+
+      const { data, error } = await supabase.rpc('buscar_pedido_por_nombre', {
+        p_nombre: nombreVal
+      });
+
+      btnBuscar.disabled = false;
+      btnBuscar.textContent = 'Editar mi pedido';
+
+      if (error) {
+        mostrarMensaje('Error al buscar: ' + error.message, 'err');
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        avisoEdicion.style.display = 'none';
+        mostrarMensaje('No hay ningún pedido con ese nombre. Llénalo y guárdalo como nuevo.', 'err');
+        return;
+      }
+
+      const p = data[0];
+      cantidades.revueltas = p.revueltas || 0;
+      cantidades.frijol_queso = p.frijol_queso || 0;
+      cantidades.queso = p.queso || 0;
+
+      document.getElementById('masa').value = p.masa || 'Maíz';
+      document.getElementById('notas').value = p.notas || '';
+
+      const existeBebida = Array.from(bebidaSelect.options).some(opt => opt.value === p.bebida);
+      bebidaSelect.value = existeBebida ? p.bebida : 'Ninguna';
+
+      actualizarVista();
+      avisoEdicion.style.display = 'block';
+    });
+
+    document.getElementById('formPedido').addEventListener('submit', async (e) => {
       e.preventDefault();
-      mensaje.textContent = '';
+      mensajeBox.className = 'mensaje';
 
       const nombre = document.getElementById('nombre').value.trim();
       const masa = document.getElementById('masa').value;
       const bebida = bebidaSelect.value;
-      const precioBebida = obtenerPrecioBebida();
-      const total = calcularTotal();
-      const notas = document.getElementById('notas').value.trim() || null;
+      const notas = document.getElementById('notas').value.trim();
+      const total = actualizarVista();
 
-      const sumaPupusas = cantidades.revueltas + cantidades.frijol_queso + cantidades.queso;
-      if (sumaPupusas === 0 && precioBebida === 0) {
-        mensaje.style.color = '#b91c1c';
-        mensaje.textContent = 'Selecciona al menos una pupusa o una bebida.';
+      const totalPupusas = cantidades.revueltas + cantidades.frijol_queso + cantidades.queso;
+      if (totalPupusas === 0 && bebida === 'Ninguna') {
+        mostrarMensaje('Selecciona al menos una pupusa o bebida.', 'err');
         return;
       }
 
-      btnEnviar.disabled = true;
-      btnEnviar.textContent = 'Enviando...';
+      btnGuardar.disabled = true;
+      btnGuardar.textContent = 'Guardando...';
 
-      const { error } = await supabase
-        .from('pedidos_pupusas')
-        .insert([
-          {
-            nombre,
-            masa,
-            revueltas: cantidades.revueltas,
-            frijol_queso: cantidades.frijol_queso,
-            queso: cantidades.queso,
-            bebida,
-            precio_bebida: precioBebida,
-            total,
-            notas
-          }
-        ]);
+      const { data: accion, error } = await supabase.rpc('guardar_o_editar_pedido', {
+        p_nombre: nombre,
+        p_revueltas: cantidades.revueltas,
+        p_frijol_queso: cantidades.frijol_queso,
+        p_queso: cantidades.queso,
+        p_masa: masa,
+        p_bebida: bebida,
+        p_notas: notas,
+        p_total: total
+      });
 
-      btnEnviar.disabled = false;
-      btnEnviar.textContent = 'Enviar pedido';
+      btnGuardar.disabled = false;
+      btnGuardar.textContent = 'Guardar pedido';
 
       if (error) {
-        mensaje.style.color = '#b91c1c';
-        mensaje.textContent = 'No se pudo guardar el pedido: ' + error.message;
+        mostrarMensaje('No se pudo guardar: ' + error.message, 'err');
         return;
       }
 
-      mensaje.style.color = '#15803d';
-      mensaje.textContent = `¡Pedido guardado! Total a pagar: $${total.toFixed(2)}.`;
-      form.reset();
-      cantidades.revueltas = 0;
-      cantidades.frijol_queso = 0;
-      cantidades.queso = 0;
-      actualizarPantalla();
+      avisoEdicion.style.display = 'none';
+      mostrarMensaje(
+        accion === 'actualizado'
+          ? '¡Tu pedido fue actualizado correctamente!'
+          : '¡Pedido guardado correctamente!',
+        'ok'
+      );
     });
-
-    actualizarPantalla();
   </script>
 </body>
 </html>
